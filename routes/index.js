@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var Product = require('../models/product')
+var passport = require('passport');
+
 // protection for password
 var csrf = require('csurf');
 var csrfProtection = csrf();
@@ -22,11 +24,23 @@ router.get('/', function(req, res, next) {
 
 
 router.get('/user/signup', function(req, res, next) {
-  res.render('user/signup', {csrfToken: req.csrfToken()}) // When someone make a tretrive it create a token
+  var messages = req.flash('error');
+  res.render('user/signup', {csrfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0
+  }) // When someone make a tretrive it create a token
 })
 
-router.post('/user/signup', function(req, res, next) {
-  res.redirect('/') // When someone make a tretrive it create a token
-})
+// Set the strategy to use when createing a
+// new user. The local.signup method allow me to verify if
+// the password is already in  the db or if theres any error
+router.post('/user/signup', passport.authenticate('local.signup', {
+  successRedirect: '/user/profile',
+  failureRedirect: '/user/signup',
+  failureFlash: true // flash the message
+}))
+
+
+router.get('/user/profile', function(req, res, next) {
+  res.render('user/profile');
+});
 
 module.exports = router;

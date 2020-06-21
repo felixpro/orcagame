@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // connect to mongodb
 mongoose.connect('mongodb://localhost:27017/shopping', { useNewUrlParser: true });
-
+require('./config/passport') // Just load to auto run all the module and methods in config
 
 // view engine setup
 app.engine('.hbs', expressHbs({
