@@ -1,0 +1,9 @@
+.card {
+  padding: 50px 10px 10px 10px;
+  border: none;
+}
+
+.card .thumbnail {
+  padding: 15px;
+  border: 1px solid #dfe3dc;
+}
