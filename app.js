@@ -7,17 +7,16 @@ var expressHbs = require('express-handlebars');
 var indexRouter = require('./routes/index');
 var mongoose = require('mongoose');
 var session = require('express-session');
-
 var passport = require('passport'); // user mannagemenet
 var flash = require('connect-flash');
-
-
-// Adding new dependecies to remove the error when retreving info from the server
-var  Handlebars = require('handlebars')
-var  {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+var validator = require('express-validator');
+var  Handlebars = require('handlebars')// Adding new dependecies to remove the error when retreving info from the server
+var  {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')// Adding new dependecies to remove the error when retreving info from the server
 
 var app = express();
 app.use(express.urlencoded({ extended: true }));
+
+
 
 // connect to mongodb
 mongoose.connect('mongodb://localhost:27017/shopping', { useNewUrlParser: true });
@@ -37,9 +36,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 // resave says that I will not updatethe secciont in any change. saveUninitialized allow me to not save when nothing has been added.
 app.use(session({secret: 'mysupersecret', resave: false, saveUninitialized: false}));
 app.use(flash());
+app.use(validator());
 app.use(passport.initialize());
 app.use(passport.session()); // use session to stopre the users
 
