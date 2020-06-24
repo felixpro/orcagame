@@ -7,14 +7,14 @@ var userSchema = new Schema({
   password:       {type: String, required: true}
 });
 
-// Encrypt the password  
+// Encrypt the password
 userSchema.methods.encryptPassword = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 };
 
 // check if the password mach the hash password
 userSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, bcrypt.genSaltSync(5), null);
+  return bcrypt.compareSync(password, this.password);
 };
 
 
