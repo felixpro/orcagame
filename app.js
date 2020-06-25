@@ -62,7 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // global variable available in all my views
 app.use(function(req, res, next) {
   res.locals.login = req.isAuthenticated();
-  res.locals.session = req.session;
+  res.locals.session = req.session; // pass session to the views. I can acess to every variable from sessions
   next(); // After give that parameter to the view, now continue
 })
 
