@@ -7,6 +7,7 @@ var expressHbs = require('express-handlebars');
 
 var mongoose = require('mongoose');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var passport = require('passport'); // user mannagemenet
 var flash = require('connect-flash');
 var validator = require('express-validator');
@@ -41,7 +42,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // resave says that I will not updatethe secciont in any change. saveUninitialized allow me to not save when nothing has been added.
-app.use(session({secret: 'mysupersecret', resave: false, saveUninitialized: false}));
+app.use(session({
+  secret: 'mysupersecret',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({mongooseConnection: mongoose.connection}),
+  cookie: {maxAge: 180 * 60 * 1000} // the cookie seccion will expires after 3 h9
+}));
+
+
+
 app.use(flash());
 app.use(validator());
 app.use(passport.initialize());
@@ -52,6 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // global variable available in all my views
 app.use(function(req, res, next) {
   res.locals.login = req.isAuthenticated();
+  res.locals.session = req.session;
   next(); // After give that parameter to the view, now continue
 })
 
