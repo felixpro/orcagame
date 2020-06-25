@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var expressHbs = require('express-handlebars');
-var indexRouter = require('./routes/index');
+
 var mongoose = require('mongoose');
 var session = require('express-session');
 var passport = require('passport'); // user mannagemenet
@@ -12,6 +12,9 @@ var flash = require('connect-flash');
 var validator = require('express-validator');
 var  Handlebars = require('handlebars')// Adding new dependecies to remove the error when retreving info from the server
 var  {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')// Adding new dependecies to remove the error when retreving info from the server
+var userRouter = require('./routes/user');
+
+var indexRouter = require('./routes/index');
 
 var app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -46,12 +49,24 @@ app.use(passport.session()); // use session to stopre the users
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// global variable available in all my views
+app.use(function(req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  next(); // After give that parameter to the view, now continue
+})
+
+app.use('/user', userRouter);
+
 app.use('/', indexRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+
 
 // error handler
 app.use(function(err, req, res, next) {
